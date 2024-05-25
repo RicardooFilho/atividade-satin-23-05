@@ -16,7 +16,7 @@ function addTask(event) {
 
   li.id = taskId
   li.innerHTML = `
-     <button>✏️</button>
+      <button onclick="openModal(event)">✏️</button>
       <h2>${taskTitle}</h2>
       <p>${taskDescription}</p>
   `
@@ -31,30 +31,32 @@ function addTask(event) {
   form.reset()
 }
 
-function openModal() {
+function openModal(event) {
+
+  const task = event.target.parentElement
+  const taskTitle = task.querySelector('h2').innerText
+  const taskDescription = task.querySelector('p').innerText
 
   const body = document.querySelector('body');
-
   const dialog = document.createElement('dialog');
-
+  
   const form = document.createElement('form');
-
   const inputTitle = document.createElement('input');
-
   const textareaDescription = document.createElement('textarea');
-
   const editButton = document.createElement('button');
-
   const cancelButton = document.createElement('button');
+  cancelButton.onclick = () => dialog.close;
 
   inputTitle.type = "text";
   inputTitle.name = "title";
   inputTitle.id = "title";
   inputTitle.placeholder = "Informe o novo título da tarefa";
+  inputTitle.value = taskTitle;
 
   textareaDescription.name = "description";
   textareaDescription.id = "description";
   textareaDescription.placeholder = "Informe a nova descrição da tarefa";
+  textareaDescription.value = taskDescription;
 
   cancelButton.textContent = "Cancelar";
   editButton.textContent = "Editar";
@@ -67,8 +69,6 @@ function openModal() {
   body.append(dialog);
 
   dialog.showModal();
-
-  cancelButton.onclick(dialog.close);
 }
 
 
@@ -77,6 +77,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const tasks = JSON.parse(localStorage.getItem(taskKey)) || []
   const taskList = document.querySelector('#taskList')
   taskList.innerHTML = tasks
-    .map((task) => `<li><button title="Editar tarefa" onClick="openModal()">✏️</button><h2>${task.title}</h2><p>${task.description}</p></li>`)
+    .map((task) => `<li><button title="Editar tarefa" onClick="openModal(event)">✏️</button><h2>${task.title}</h2><p>${task.description}</p></li>`)
     .join('')
 })
